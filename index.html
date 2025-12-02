@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Gaming Portal</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Poppins", sans-serif;
+            background: radial-gradient(circle, #1c1c1c, #121212);
+            color: white;
+            text-align: center;
+        }
+        header {
+            padding: 25px;
+            font-size: 32px;
+            font-weight: 700;
+            background: #202020;
+            border-bottom: 3px solid #ffae00;
+            text-shadow: 0 0 8px #ffae00aa;
+        }
+        nav {
+            padding: 15px;
+            background: #181818;
+            box-shadow: 0 3px 10px #0004;
+        }
+        nav a {
+            color: #ffae00;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        nav a:hover { color: white; }
+        section { padding: 30px; }
+        .card {
+            background: #1c1c1c;
+            width: 70%;
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #ffae00;
+            box-shadow: 0 0 15px #ffae0050;
+        }
+        .btn {
+            margin-top: 15px;
+            background: #ffae00;
+            padding: 12px 25px;
+            color: black;
+            font-size: 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn:hover { background: #ffc94b; }
+        #gameCanvas {
+            background: #252525;
+            border: 3px solid #fff;
+            border-radius: 6px;
+            display: none;
+            margin: 25px auto;
+            box-shadow: 0 0 15px #000;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>🎮 My Gaming Portal</header>
+
+<nav>
+    <a href="#about">About</a>
+    <a href="#games">Games</a>
+    <a href="#play">Play</a>
+</nav>
+
+<section id="about">
+    <div class="card">
+        <h2>About This Portal</h2>
+        <p>
+            Welcome to my gaming portal! This website is created for my school assignment.  
+            You can explore the available games and play a browser-based game developed using  
+            HTML, CSS & JavaScript.
+        </p>
+    </div>
+</section>
+
+<section id="games">
+    <div class="card">
+        <h2>Available Games</h2>
+        <p>🎯 <strong>Catch the Coin</strong> — Collect coins and increase your score!</p>
+        <button class="btn" onclick="startGame()">Play Now</button>
+    </div>
+</section>
+
+<section id="play">
+    <div class="card">
+        <h2>Catch the Coin</h2>
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+    </div>
+</section>
+
+<script>
+// Prevent arrow keys from scrolling the webpage
+window.addEventListener("keydown", function(e) {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+    }
+}, false);
+
+// GAME LOGIC
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+let gameStarted = false;
+
+let player = { x: 180, y: 350, size: 20 };
+let coin = { x: Math.random() * 380, y: Math.random() * 380, size: 15 };
+let score = 0;
+
+document.addEventListener("keydown", (e) => {
+    if (!gameStarted) return;
+
+    if (e.key === "ArrowLeft") player.x -= 10;
+    if (e.key === "ArrowRight") player.x += 10;
+    if (e.key === "ArrowUp") player.y -= 10;
+    if (e.key === "ArrowDown") player.y += 10;
+});
+
+function startGame() {
+    canvas.style.display = "block";
+    gameStarted = true;
+    score = 0;
+    loop();
+}
+
+function loop() {
+    if (!gameStarted) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(coin.x, coin.y, coin.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    let dist = Math.hypot(player.x - coin.x, player.y - coin.y);
+    if (dist < 25) {
+        score++;
+        coin.x = Math.random() * 380;
+        coin.y = Math.random() * 380;
+    }
+
+    ctx.fillStyle = "white";
+    ctx.font = "20px Poppins";
+    ctx.fillText("Score: " + score, 10, 25);
+
+    requestAnimationFrame(loop);
+}
+</script>
+
+</body>
+</html>
